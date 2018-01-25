@@ -1,2 +1,10 @@
 # Citizen-Sensing
-A project for Lappeenranta City involving citizens to report foul smells in and around city area.
+This is a project by students of Lappeenrata city which implements the concept of citizen engagement for detecting foul smells in the city
+
+Team:
+Ajesh Kumar - Project Manager
+Maliha Rahman - Scrum Master
+Anisul Islam - Front end lead
+Feruzjon Muyassarov - Back end Ninja
+Krishna Teja Vaddepalli - Motivator
+Sami
