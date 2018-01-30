@@ -116,8 +116,31 @@ router.post('/saveData', function(req, res){
     });
 
     data.saveData(newData, function(err, user){
-    	var temp = {"result" : "success", "data" : "saved"};
-    	res.end(temp.toString());
+        var temp = {"result" : "success", "data" : "saved"};
+        res.end(temp.toString());
+        if(err) throw err;
+        //console.log(data);
+    });
+
+    req.flash('success_msg', 'Your data is saved');
+});
+
+router.get('/showAllData', function(req, res){
+    data.find(function(err, data){
+        var temp = {"result" : "success", "data" : data};
+        res.end(JSON.stringify(temp));
+        if(err) throw err;
+        //console.log(data);
+    });
+
+    req.flash('success_msg', 'Your data is saved');
+});
+
+router.post('/showUserData', function(req, res){
+    var username = req.body.username;
+    console.log(username);
+    data.find({"username":username},function(err, data){
+        res.end(JSON.stringify(data));
         if(err) throw err;
         //console.log(data);
     });
