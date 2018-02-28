@@ -1,5 +1,7 @@
 package com.ble.dreamworld.battery;
 
+import android.os.Parcel;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,23 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.RequestQueue;
+import com.kontakt.sdk.android.ble.connection.OnServiceReadyListener;
+import com.kontakt.sdk.android.ble.discovery.ibeacon.IBeaconDeviceEvent;
+import com.kontakt.sdk.android.ble.manager.ProximityManager;
+import com.kontakt.sdk.android.ble.manager.ProximityManagerFactory;
+import com.kontakt.sdk.android.ble.manager.listeners.EddystoneListener;
+import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
+import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleEddystoneListener;
+import com.kontakt.sdk.android.ble.manager.listeners.simple.SimpleIBeaconListener;
+import com.kontakt.sdk.android.common.KontaktSDK;
+import com.kontakt.sdk.android.common.Proximity;
+import com.kontakt.sdk.android.common.model.Model;
+import com.kontakt.sdk.android.common.profile.DeviceProfile;
+import com.kontakt.sdk.android.common.profile.IBeaconDevice;
+import com.kontakt.sdk.android.common.profile.IBeaconRegion;
+import com.kontakt.sdk.android.common.profile.IEddystoneDevice;
+import com.kontakt.sdk.android.common.profile.IEddystoneNamespace;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -28,6 +47,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
+import java.util.EventListener;
+import java.util.List;
 import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -55,14 +76,21 @@ public class MainActivity extends AppCompatActivity {
     int counter;
     volatile boolean stopWorker;
 
-    String urlForRest = "http://192.168.0.118:8080/saveData";
+    String urlForRest = "http://192.168.0.120:8080/saveData";
 
     BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
+    private ProximityManager proximityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        KontaktSDK.initialize("knLToeFcNOHHHuPgXAeCkjdvPOcXIaUX");
+
+        proximityManager = ProximityManagerFactory.create(this);
+        proximityManager.setIBeaconListener(createIBeaconListener());
+        proximityManager.setEddystoneListener(createEddystoneListener());
+
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         String status;
         if(bluetooth.isEnabled()){
@@ -73,11 +101,10 @@ public class MainActivity extends AppCompatActivity {
             status = "Bluetooth is not enabled";
         }
 
-        status = status + " - " + bluetooth.getName();
+        status = bluetooth.getBondedDevices() + " - " + bluetooth.startDiscovery() + " - " + bluetooth.getState() + " - " + bluetooth.getName();
 
         TextView tv = (TextView) findViewById(R.id.ble);
 
-        tv.append(status);
         Toast.makeText(this, status, Toast.LENGTH_LONG).show();
 
         String location = getLocation();
@@ -92,78 +119,73 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void openBT() throws IOException
-    {
-        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID
-        mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
-        mmSocket.connect();
-        mmOutputStream = mmSocket.getOutputStream();
-        mmInputStream = mmSocket.getInputStream();
-
-        beginListenForData();
-        TextView tv = (TextView) findViewById(R.id.ble);
-
-        tv.append("Bluetooth Opened");
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startScanning();
     }
 
-    void beginListenForData()
-    {
-        final Handler handler = new Handler();
-        final byte delimiter = 10; //This is the ASCII code for a newline character
+    @Override
+    protected void onStop() {
+        proximityManager.stopScanning();
+        super.onStop();
+    }
 
-        stopWorker = false;
-        readBufferPosition = 0;
-        readBuffer = new byte[1024];
-        workerThread = new Thread(new Runnable()
-        {
-            public void run()
-            {
-                while(!Thread.currentThread().isInterrupted() && !stopWorker)
-                {
-                    try
-                    {
-                        int bytesAvailable = mmInputStream.available();
-                        if(bytesAvailable > 0)
-                        {
-                            byte[] packetBytes = new byte[bytesAvailable];
-                            mmInputStream.read(packetBytes);
-                            for(int i=0;i<bytesAvailable;i++)
-                            {
-                                byte b = packetBytes[i];
-                                if(b == delimiter)
-                                {
-                                    byte[] encodedBytes = new byte[readBufferPosition];
-                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-                                    final String data = new String(encodedBytes, "US-ASCII");
-                                    readBufferPosition = 0;
-
-                                    handler.post(new Runnable()
-                                    {
-                                        public void run()
-                                        {
-                                            TextView tv = (TextView) findViewById(R.id.ble);
-
-                                            tv.append(data);
-                                        }
-                                    });
-                                }
-                                else
-                                {
-                                    readBuffer[readBufferPosition++] = b;
-                                }
-                            }
-                        }
-                    }
-                    catch (IOException ex)
-                    {
-                        stopWorker = true;
-                    }
-                }
+    private void startScanning() {
+        proximityManager.connect(new OnServiceReadyListener() {
+            @Override
+            public void onServiceReady() {
+                proximityManager.startScanning();
             }
         });
-
-        workerThread.start();
     }
+
+    @Override
+    protected void onDestroy() {
+        proximityManager.disconnect();
+        proximityManager = null;
+        super.onDestroy();
+    }
+
+    private IBeaconListener createIBeaconListener() {
+        Log.i("call", "create CAlled");
+        return new SimpleIBeaconListener() {
+            @Override
+            public void onIBeaconDiscovered(IBeaconDevice ibeacon, IBeaconRegion region) {
+                Log.i("inside", "First Disover loop");
+                TextView tv = (TextView) findViewById(R.id.ble);
+                UUID uuid = ibeacon.getProximityUUID();
+                tv.setText("Ibeacon Found " + uuid.toString() + "\n");
+                String uuidback = uuid.toString();
+                String last = uuidback.substring(uuidback.length()-1, uuidback.length());
+                int val = Integer.valueOf(last);
+                tv.append(val + " --- frm listener\n");
+                //tv.append(" --- " + uuidback.substring(uuidback.length()-1, uuidback.length()));
+                if(val > 1){
+                    insertData();
+                    tv.append("Beacon button clicked " + " -- " + val + "\n");
+                    SystemClock.sleep(10000);
+                    createIBeaconListener();
+                }
+                tv.append("After if " + val);
+                Log.i("Sample", "IBeacon discovered: " + ibeacon.toString());
+            }
+        };
+    }
+
+    private EddystoneListener createEddystoneListener() {
+        return new SimpleEddystoneListener() {
+            @Override
+            public void onEddystoneDiscovered(IEddystoneDevice eddystone, IEddystoneNamespace namespace) {
+                TextView tv = (TextView) findViewById(R.id.ble);
+                tv.setText("EddyStone Found");
+
+                Log.i("Sample", "Eddystone discovered: " + eddystone.toString());
+            }
+        };
+    }
+
+
 
     String location;
     private void insertData() {
@@ -268,4 +290,81 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
+/*
+
+
+    void openBT() throws IOException
+    {
+        UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //Standard SerialPortService ID
+        mmSocket = mmDevice.createRfcommSocketToServiceRecord(uuid);
+        mmSocket.connect();
+        mmOutputStream = mmSocket.getOutputStream();
+        mmInputStream = mmSocket.getInputStream();
+
+
+        TextView tv = (TextView) findViewById(R.id.ble);
+
+        tv.append("Bluetooth Opened");
+    }
+
+
+    void beginListenForData()
+    {
+        final Handler handler = new Handler();
+        final byte delimiter = 10; //This is the ASCII code for a newline character
+
+        stopWorker = false;
+        readBufferPosition = 0;
+        readBuffer = new byte[1024];
+        workerThread = new Thread(new Runnable()
+        {
+            public void run()
+            {
+                while(!Thread.currentThread().isInterrupted() && !stopWorker)
+                {
+                    try
+                    {
+                        int bytesAvailable = mmInputStream.available();
+                        if(bytesAvailable > 0)
+                        {
+                            byte[] packetBytes = new byte[bytesAvailable];
+                            mmInputStream.read(packetBytes);
+                            for(int i=0;i<bytesAvailable;i++)
+                            {
+                                byte b = packetBytes[i];
+                                if(b == delimiter)
+                                {
+                                    byte[] encodedBytes = new byte[readBufferPosition];
+                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+                                    final String data = new String(encodedBytes, "US-ASCII");
+                                    readBufferPosition = 0;
+
+                                    handler.post(new Runnable()
+                                    {
+                                        public void run()
+                                        {
+                                            TextView tv = (TextView) findViewById(R.id.ble);
+
+                                            tv.append(data);
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    readBuffer[readBufferPosition++] = b;
+                                }
+                            }
+                        }
+                    }
+                    catch (IOException ex)
+                    {
+                        stopWorker = true;
+                    }
+                }
+            }
+        });
+
+        workerThread.start();
+    } */
 }

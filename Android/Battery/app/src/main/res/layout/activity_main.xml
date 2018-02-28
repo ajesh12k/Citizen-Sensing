@@ -43,4 +43,24 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="80dp"
         android:text="TestSend" />
+
+    <TextView
+        android:id="@+id/ble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/etLocationLat"
+        android:layout_alignStart="@+id/etLocationLat"
+        android:layout_below="@+id/etLocationLong"
+        android:layout_marginTop="56dp"
+        android:text="t" />
+
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="35dp"
+        android:layout_toLeftOf="@+id/etLocationLong"
+        android:layout_toStartOf="@+id/etLocationLong"
+        android:text="test" />
 </RelativeLayout>

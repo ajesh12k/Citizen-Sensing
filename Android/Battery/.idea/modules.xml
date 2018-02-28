@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Battery.iml" filepath="$PROJECT_DIR$/Battery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android_sdk_4.0.0/android_sdk_4.0.0.iml" filepath="$PROJECT_DIR$/android_sdk_4.0.0/android_sdk_4.0.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
