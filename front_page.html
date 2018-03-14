@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Users</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
+
+    <link rel="stylesheet" href="./resource/app.css">
+    <link rel="stylesheet" href="style.css">
+    <!--<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">-->
+    <!--<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>-->
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfCDIguA6s-_lLXP4xH_fkdnJthUgjcSs&callback=initMap">
+    </script>
+    <script src="event.js"></script>
+    <script src="map.js"></script>
+
+</head>
+
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <div class="navbar-brand">
+                <img alt="Csensing App" src="city-logo.jpg" width="40px" height="30px"> &nbsp;
+            </div>
+        </div>
+        <ul class="nav navbar-text navbar-left">
+            <li>CSensing App</li>
+        </ul>
+
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+
+        </ul>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-9">
+            <div id="map"></div>
+            <br>
+            <div class="range range-primary">
+                <input type="range" name="range" min="1" max="100" value="50" onchange=getNew(value)>
+            </div>
+        </div>
+
+
+
+        <div class="col-md-3">
+                    <div class="jumbotron">
+                        <!--button type ="button" class="btn btn-default">All</button>
+                        <button type="button" class="btn btn-default active">My</button-->
+                        <div class = "col-md-6">
+                            <u><a selected>Twitter</a></u>
+                        </div>
+                        <div class = "col-md-6">
+                            Instagram
+                        </div>
+                        <hr border = "2px">
+                        <div class = "col-md-12">
+                            Nisha: <br>
+                            &nbsp;
+                            There is a smell observed near lake saimaa. I have reported it to cSensing.
+                            #badSmell #cSensing
+                        </div>
+                    </div>
+        </div>
+
+
+
+
+    </div>
+    </div>
+
+</div>
+
+</body>
+</html>
