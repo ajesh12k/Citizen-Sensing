@@ -12,22 +12,16 @@
 
     <!-- Login progress -->
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Map View" />
-
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit" />
+        android:text="Want Maps?" />
 
     <TextView
         android:id="@+id/ble"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="Click Checker!" />
 
 </LinearLayout>

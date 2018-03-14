@@ -7,6 +7,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,7 +34,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -74,36 +79,29 @@ public class LoginActivity extends AppCompatActivity  {
     private ProximityManager proximityManager;
 
 
-    String urlForRest = "http://192.168.0.126:8080/saveData";
-    String urlForGet = "http://192.168.0.126:8080/getUserSubmittedData";
+    String urlForRest = "https://citizen-sensing-api-ajesh12k.c9users.io/saveEvent";
+    String urlForGet = "https://citizen-sensing-api-ajesh12k.c9users.io/getEvent";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        TextView tv = (TextView)findViewById(R.id.textView);
         Button submit = (Button)findViewById(R.id.button);
+
+
+        /*
         KontaktSDK.initialize("knLToeFcNOHHHuPgXAeCkjdvPOcXIaUX");
         proximityManager = ProximityManagerFactory.create(this);
         proximityManager.setIBeaconListener(createIBeaconListener());
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         proximityManager.setEddystoneListener(createEddystoneListener());
-        String loc = getLocation();
-        tv.setText(loc);
-        writeToFile("F4:6A:93:05:87:42", LoginActivity.this);
-
-        tv.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-                startActivity(intent);
-            }
-        });
+*/
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         submit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                LoginActivity.this.insertData("hello");
+                Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -117,6 +115,7 @@ public class LoginActivity extends AppCompatActivity  {
         }
     }
 
+/*
     @Override
     protected void onStart() {
         super.onStart();
@@ -137,7 +136,38 @@ public class LoginActivity extends AppCompatActivity  {
             }
         });
     }
+*/
+    int i = 0;
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event){
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    i++;
+                    Log.i("Clicked", "vol up" + i);
+                    if(i % 2 == 0) {
+                        TextView tv = (TextView) findViewById(R.id.ble);
+                        tv.append("\n Vol up button clicked!");
+                        insertData("hello");
+                        Log.i("Clicked", "vol up");
+                    }
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    TextView tv = (TextView) findViewById(R.id.ble);
+                    tv.setText("Vol down button clicked");
+                    Log.i("Clicked", "vol down");
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
+        }
+    }
 
+/*
     @Override
     protected void onDestroy() {
         proximityManager.disconnect();
@@ -214,53 +244,10 @@ public class LoginActivity extends AppCompatActivity  {
         };
     }
 
+*/
 
     public Set scan(){
-        TextView tv = (TextView)findViewById(R.id.textView);
-        tv.setText(bluetooth.getBondedDevices().toString());
         return bluetooth.getBondedDevices();
-    }
-
-
-    private void writeToFile(String data,Context context) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("csensing", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
-        }
-    }
-
-    private String readFromFile(Context context) {
-
-        String ret = "";
-
-        try {
-            InputStream inputStream = context.openFileInput("csensing");
-
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
-                }
-
-                inputStream.close();
-                ret = stringBuilder.toString();
-            }
-        }
-        catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        }
-
-        return ret;
     }
 
     String location;
@@ -277,10 +264,10 @@ public class LoginActivity extends AppCompatActivity  {
             JSONObject params = new JSONObject();
 
             double test = Math.random();
-            params.put("username", macId);
+            params.put("device_id", macId);
             params.put("latitude", location.split("#")[0]);
             params.put("longitude", location.split("#")[1]);
-            params.put("value", String.valueOf(test));
+            params.put("type", "smell");
             final String requestBody = params.toString();
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, urlForRest, new Response.Listener<String>() {
@@ -289,6 +276,7 @@ public class LoginActivity extends AppCompatActivity  {
                     Log.i("VOLLEY", response);
                     Toast.makeText(getApplication(), response, Toast.LENGTH_SHORT).show();
                     addNotification();
+                    getData("hello");
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -358,7 +346,13 @@ public class LoginActivity extends AppCompatActivity  {
         JSONObject resp = new JSONObject();
         try {
             JSONObject obj = new JSONObject();
-            obj.put("username", macId);
+            obj.put("event_id", "");
+            obj.put("device_id", macId);
+            obj.put("fromDate", "");
+            obj.put("toDate", "");
+            obj.put("status", "");
+            obj.put("changedBy", "");
+            obj.put("changedDate", "");
 
             RequestQueue queue = Volley.newRequestQueue(this);
             JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, urlForGet, obj,
@@ -367,8 +361,8 @@ public class LoginActivity extends AppCompatActivity  {
                         public void onResponse(JSONObject response) {
                             Log.i("Response for get", response.toString());
 
-                            TextView tv = (TextView) findViewById(R.id.textView);
-                            //tv.append("\n" + response);
+                            TextView tv = (TextView) findViewById(R.id.ble);
+                            tv.append("\n" + response);
                         }
                     },
                     new Response.ErrorListener() {
