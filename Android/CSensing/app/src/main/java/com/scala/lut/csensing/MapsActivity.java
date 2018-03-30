@@ -36,7 +36,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationManager locationManager;
     static final int REQUEST_LOCATION = 1;
     String urlForGet = "https://citizen-sensing-api-ajesh12k.c9users.io/getEvent";
-
+    String type = "";
+    String users = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,8 +74,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void markOnMap(Double latitude, Double longitude, String title){
         LatLng sydney = new LatLng(latitude, longitude);
         mMap.addMarker(new MarkerOptions().position(sydney).title(title));
-        mMap.setMaxZoomPreference(8);
-        mMap.setMinZoomPreference(7);
+        mMap.setMaxZoomPreference(18);
+        mMap.setMinZoomPreference(15);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
@@ -103,9 +104,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public JSONObject getData(String macId){
         ArrayList array = new ArrayList();
         JSONObject resp = new JSONObject();
+        Bundle extras = getIntent().getExtras();
+        String type = (String)extras.get("type");
+        String users = (String)extras.get("users");
         try {
             JSONObject obj = new JSONObject();
             obj.put("event_id", "");
+            obj.put("event_type", "");
             obj.put("device_id", macId);
             obj.put("fromDate", "");
             obj.put("toDate", "");
