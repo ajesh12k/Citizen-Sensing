@@ -3,13 +3,16 @@ package com.scala.lut.csensing;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.SystemClock;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
@@ -18,11 +21,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -32,8 +33,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
-import junit.framework.Test;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,21 +50,25 @@ public class WebviewActivity extends AppCompatActivity {
     static final int REQUEST_LOCATION = 1;
     LocationManager locationManager;
 
-    String urlForRest = "https://citizen-sensing-api-ajesh12k.c9users.io/saveEvent";
+    String urlForRest = "https://csensing-angular-ajesh12k.c9users.io/saveEvent";
     String uiURL = "https://csensing-angular-ajesh12k.c9users.io";
     String urlForEventGet = "https://csensing-angular-ajesh12k.c9users.io/getEventTypes";
-    String urlForRegisterCheck = "https://citizen-sensing-api-ajesh12k.c9users.io/checkDevice";
+    String urlForRegisterCheck = "https://csensing-angular-ajesh12k.c9users.io/checkDevice";
     int i = 0;
     String address = "";
     JSONArray types = new JSONArray();
+    String monitoring = "";
+    String prevMonitoring = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        Button submit = (Button)findViewById(R.id.button);
+        Button submit = (Button)findViewById(R.id.maps);
         Button register = (Button)findViewById(R.id.register);
         TextView tv = (TextView) findViewById(R.id.ble);
+        Button how = (Button)findViewById(R.id.how);
         address = getMacAddr();
         getEventTypes();
         checkDevice(address);
@@ -80,6 +83,14 @@ public class WebviewActivity extends AppCompatActivity {
             public void onClick(View view){
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uiURL));
                 startActivity(browserIntent);
+            }
+        });
+
+        how.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(getApplicationContext(), About.class);
+                startActivity(intent);
             }
         });
     }
@@ -103,9 +114,10 @@ public class WebviewActivity extends AppCompatActivity {
                                     Object deviceStatus = response.get("device");
                                     Log.i("Device status", deviceStatus.toString());
                                     if(deviceStatus.toString().equalsIgnoreCase("found")){
-                                        checkRegisterStatus("found");
+                                        Object id = response.get("device_id");
+                                        checkRegisterStatus("found",id.toString());
                                     }else{
-                                        checkRegisterStatus("notFound");
+                                        checkRegisterStatus("notFound","none");
                                     }
                                 }
                                 Log.i("Status Tag", status.toString());
@@ -125,20 +137,22 @@ public class WebviewActivity extends AppCompatActivity {
         }
     }
 
-    public void checkRegisterStatus(String status){
+    public void checkRegisterStatus(String status, String id){
         Button register = (Button)findViewById(R.id.register);
+        TextView deviceId = (TextView)findViewById(R.id.deviceId);
         if (status.equalsIgnoreCase("notfound")) {
-            register.setText("Register");
-            register.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view){
+            register.setText(" Register!");
+            //register.setOnClickListener(new View.OnClickListener(){
+              //  @Override
+                //public void onClick(View view){
                     Intent intent = new Intent(getApplicationContext(), Register.class);
                     startActivity(intent);
-                }
-            });
+            //    //}
+            //});
             Log.i("Not Found", "Device");
         } else if (status.equalsIgnoreCase("found")) {
-            register.setText("Test");
+            deviceId.append(" "+id+"!");
+            register.setText(" Try out!");
             register.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view){
@@ -204,6 +218,7 @@ public class WebviewActivity extends AppCompatActivity {
         }
     }
 
+    private long mLastClickTime = 0;
     @Override
     public boolean dispatchKeyEvent(KeyEvent event){
         int action = event.getAction();
@@ -215,8 +230,26 @@ public class WebviewActivity extends AppCompatActivity {
                     TextView tv = (TextView) findViewById(R.id.ble);
                     if(i % 2 == 0) {
                         if(address != "") {
-                            Log.i("Event", "Triggered with address " + address);
-                            insertEvent(address);
+                            Spinner sItems = (Spinner) findViewById(R.id.spinner);
+                            monitoring = sItems.getSelectedItem().toString();
+                            Log.i("Event", "Triggered with address " + address + " for monitoring " + monitoring);
+                            Log.i("Compare", "Previous mon - " + prevMonitoring + " & monitoring - " + monitoring);
+                            if (SystemClock.elapsedRealtime() - mLastClickTime > 30000 || !prevMonitoring.equalsIgnoreCase(monitoring)) {
+                                Log.i("Insert", "New Event");
+                                insertEvent(address, monitoring);
+                                prevMonitoring = monitoring;
+                                Log.i("Set prev Mon ", prevMonitoring);
+                                Log.i("Time", String.valueOf(mLastClickTime));
+                            }else{
+                                tv.setText("Same observation has already been received from this device for the same place.");
+                                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    v.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE));
+                                }else{
+                                    v.vibrate(500);
+                                }
+                            }
+                            mLastClickTime = SystemClock.elapsedRealtime();
                         }else{
                             Log.i("MAC address", "Not Found");
                             tv.append("Unable to get Device Information. Please try again!");
@@ -231,10 +264,8 @@ public class WebviewActivity extends AppCompatActivity {
 
     String location;
 
-    public void insertEvent(String macId){
+    public void insertEvent(String macId, String monitoring){
         findViewById(R.id.loadPanel).setVisibility(View.VISIBLE);
-        Spinner sItems = (Spinner) findViewById(R.id.spinner);
-        final String monitoring = sItems.getSelectedItem().toString();
         TextView tv = (TextView) findViewById(R.id.ble);
 //        tv.append("\n" + monitoring);
 
@@ -256,6 +287,9 @@ public class WebviewActivity extends AppCompatActivity {
             obj.put("type", monitoring);
 
             RequestQueue queue = Volley.newRequestQueue(this);
+            Spinner sItems = (Spinner) findViewById(R.id.spinner);
+            final String monitorEvent= sItems.getSelectedItem().toString();
+
             JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, urlForRest, obj,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -280,9 +314,9 @@ public class WebviewActivity extends AppCompatActivity {
                                     JSONObject result = (JSONObject)response.get("result");
                                     Object event_id = result.get("event_id");
                                     Log.i("Event id generated - ", event_id.toString());
-                                    device.setText("Your observation has been successfully registered with event id " + event_id.toString());
+                                    device.setText("Your observation has been successfully registered for "+monitorEvent+"!");
                                     findViewById(R.id.loadPanel).setVisibility(View.GONE);
-                                    addNotification("Your observation has been saved succesfully for "+monitoring+"!");
+                                    addNotification("Your observation has been saved succesfully for "+monitorEvent+"!");
                                 }
                                 Log.i("Status Tag", status.toString());
                             }catch(Exception e){

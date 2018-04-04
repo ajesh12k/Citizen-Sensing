@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="@integer/google_play_services_version"
+    android:versionName="1.0.0"
     package="com.scala.lut.csensing">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,6 +16,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
 
     <application
         android:allowBackup="true"
@@ -49,9 +52,27 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".Register"
-            android:label="@string/title_activity_register" />
+            android:label="@string/title_activity_register"
+            android:parentActivityName=".WebviewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".WebviewActivity" />
+        </activity>
         <activity android:name=".WebviewActivity" />
-        <activity android:name=".TestActivity"></activity>
+        <activity
+            android:name=".TestActivity"
+            android:parentActivityName=".WebviewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".WebviewActivity" />
+        </activity>
+        <activity android:name=".About"
+            android:parentActivityName=".WebviewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".WebviewActivity" />
+
+        </activity>
     </application>
 
 </manifest>

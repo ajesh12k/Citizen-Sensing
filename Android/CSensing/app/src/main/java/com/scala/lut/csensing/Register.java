@@ -41,8 +41,8 @@ import java.util.Set;
 public class Register extends AppCompatActivity {
     BluetoothAdapter bluetooth = BluetoothAdapter.getDefaultAdapter();
     public int ENABLE_BT_REQUEST_CODE = 1;
-    String urlForRest = "https://citizen-sensing-api-ajesh12k.c9users.io/saveDevice";
-    String urlForRegisterCheck = "https://citizen-sensing-api-ajesh12k.c9users.io/checkDevice";
+    String urlForRest = "https://csensing-angular-ajesh12k.c9users.io/saveDevice";
+    String urlForRegisterCheck = "https://csensing-angular-ajesh12k.c9users.io/checkDevice";
 
     String address = "";
     @Override
@@ -73,6 +73,13 @@ public class Register extends AppCompatActivity {
             String address = bleId.getText().toString();
             checkDevice(address);
         }*/
+    }
+
+    @Override
+    public void onBackPressed() {
+        return;
+        //        moveTaskToBack(true);
+        //        finish();
     }
 
 

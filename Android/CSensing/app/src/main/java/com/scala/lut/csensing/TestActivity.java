@@ -1,5 +1,6 @@
 package com.scala.lut.csensing;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -23,7 +24,15 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         address = getMacAddr();
+    }
+
+    @Override
+    public boolean onNavigateUp(){
+        Log.i("Back", "Clicked");
+        finish();
+        return true;
     }
 
     @Override

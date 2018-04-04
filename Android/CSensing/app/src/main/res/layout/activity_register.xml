@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/background"
     tools:context="com.scala.lut.csensing.Register">
 
     <TextView
@@ -16,6 +17,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp"
+        android:textStyle="bold"
         tools:layout_editor_absoluteX="163dp"
         tools:layout_editor_absoluteY="107dp" />
 
@@ -31,7 +35,7 @@
         tools:layout_editor_absoluteY="199dp" />
 
 
-    <Button
+    <Button style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Checking Device Status"
+        android:textColor="@color/colorBlack"
         android:textAlignment="center"
         android:visibility="visible" />
 

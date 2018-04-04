@@ -1,6 +1,7 @@
 package com.scala.lut.csensing;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -35,7 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     LocationManager locationManager;
     static final int REQUEST_LOCATION = 1;
-    String urlForGet = "https://citizen-sensing-api-ajesh12k.c9users.io/getEvent";
+    String urlForGet = "https://csensing-angular-ajesh12k.c9users.io/getEvent";
     String type = "";
     String users = "";
     @Override

@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,48 +9,103 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.scala.lut.csensing.WebviewActivity">
+    tools:context="com.scala.lut.csensing.WebviewActivity"
+    android:background="@drawable/background">
 
     <!-- Login progress -->
 
-    <Button
-        android:id="@+id/register"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/deviceId"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=" Register Device"
-        android:drawableLeft="@drawable/note" />
+        android:fontFamily="casual"
+        android:padding="30px"
+        android:text="Welcome,"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=" Want Maps?"
-        android:drawableLeft="@drawable/map"
-    />
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:id="@+id/rel"
+        android:layout_below="@id/deviceId"
+        tools:context="com.scala.lut.csensing.WebviewActivity" >
 
+        <Button style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text=" Try out"
+            android:drawableLeft="@drawable/note" />
+
+        <Button style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/maps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/register"
+            android:layout_alignBottom="@+id/register"
+            android:layout_toRightOf="@+id/register"
+            android:text=" Maps?"
+            android:drawableLeft="@drawable/map" />
+
+        <Button style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/how"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/maps"
+            android:layout_alignBottom="@+id/maps"
+            android:layout_toRightOf="@+id/maps"
+            android:drawableLeft="@drawable/question"
+            android:text="Help" />
+
+    </RelativeLayout>
 
     <TextView
+        android:id="@+id/monitor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="What do you want to monitor today?" />
+        android:layout_below="@+id/rel"
+        android:padding="10px"
+        android:text="What do you want to monitor today?"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp" />
+
 
     <Spinner
+        android:padding="10px"
         android:id="@+id/spinner"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_gravity="start"
+        android:layout_below="@id/monitor"
+        android:textAlignment="viewStart"
         android:layout_height="41dp" />
 
     <TextView
         android:id="@+id/details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_gravity="start"
+        android:layout_below="@id/spinner"
+        android:paddingTop="100px"
+        android:textAlignment="viewStart"
+        android:textColor="@color/colorBlack" />
 
     <TextView
         android:id="@+id/ble"
-        android:padding="8dip"
-        android:layout_marginTop="200px"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details"
+        android:layout_marginTop="200px"
+        android:padding="8dip"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:id="@+id/loadPanel"
@@ -64,4 +119,4 @@
     </RelativeLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

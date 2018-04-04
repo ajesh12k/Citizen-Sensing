@@ -2,6 +2,7 @@ package com.scala.lut.csensing;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -22,6 +23,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -95,11 +97,18 @@ public class LoginActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ConnectivityManager conMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         setContentView(R.layout.activity_login);
+        checkAccess();
+    }
+
+    protected void checkAccess(){
+        Log.i("access","chk");
         TextView internetCheck = (TextView)findViewById(R.id.internetCheck);
-        if ( conMgr.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTED ||  conMgr.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTED ) {
-            Log.i("Internet", "Available");
+        ConnectivityManager conMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+
+        if ( (conMgr.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTED &&  manager.isProviderEnabled( LocationManager.GPS_PROVIDER)||  (conMgr.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTED && manager.isProviderEnabled( LocationManager.GPS_PROVIDER)))) {
+            Log.i("Access", "Available");
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -109,8 +118,19 @@ public class LoginActivity extends AppCompatActivity  {
                 }
             }, 1000);
         }else{
-            internetCheck.setText("Please Connect to internet and try again!");
-            Log.i("Internet ", "Disabled");
+            if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                Log.i("GPS", "Disabled");
+                internetCheck.setText("Please turn on GPS and try again!");
+            }else {
+                internetCheck.setText("Please Connect to internet and try again!");
+                Log.i("Internet ", "Disabled");
+            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    checkAccess();
+                }
+            }, 5000);
         }
     }
 }
