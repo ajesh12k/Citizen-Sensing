@@ -1,0 +1,29 @@
+<br/>
+<br/>
+<br/>
+<div class="container">
+    <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">User detail: {{device.deviceId}}</h3>
+            </div>
+            <table class="table table-bordered table-hover ">
+                <tbody>
+                <tr>
+                    <td>User name</td>
+                    <td>{{device.deviceId}}</td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td>{{device.device_mac}}</td>
+                </tr>
+                <tr>
+                    <td>Position</td>
+                    <td>{{device.status}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <a class="btn btn-default pull-right" role="button" ng-click="back()">Back</a>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+<br/>
+<br/>
+<div class="container">
+    <div class="col-sm-12 col-xs-12 col-md-12">
+             <!-- Nav tabs -->
+        <div class="card">
+            <ul class="nav nav-tabs" role="tablist" style="cursor: pointer;">
+                <li role="presentation"><a data-target="#tweets" aria-controls="tweets" role="tab" data-toggle="tab">Tweets</a></li>
+                <li role="presentation" class="active"><a data-target="#myEvents" aria-controls="myEvents" role="tab" data-toggle="tab">My Events</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div class="row">
+                        <div class="col-md-2 col-md-offset-1">
+                            <h5 style="cursor: pointer"><span ng-click="search('Smell')" class="label label-default" style="background-color: #ff8a80;">Smell</span></h5>
+                        </div>
+                        <div class="col-md-2">
+                            <h5 style="cursor: pointer"><span ng-click="search('Algae')" class="label label-default" style="background-color: #880e4f;">Algae</span></h5>
+                        </div>
+                        <div class="col-md-2">
+                            <h5 style="cursor: pointer"><span ng-click="search('Noise')" class="label label-default" style="background-color: #4a148c;">Noise</span></h5>
+                        </div>
+                        <div class="col-md-2">
+                            <h5 style="cursor: pointer"><span ng-click="search('Lake')" class="label label-default" style="background-color: #3d5afe;">Lake</span></h5>
+                        </div>
+
+                        <div class="col-md-2">
+                            <h5 style="cursor: pointer"><span ng-click="search('')" class="label label-default">All</span></h5>
+                        </div>
+                    </div>
+                
+                <!--tab 1-->
+                <div role="tabpanel" class="tab-pane" id="tweets">
+                    <div twitter-timeline="978808994465763331" auto-resize="true" css-url="path/to/custom.css" data-tweet-limit="5">Loading tweets...</div>
+                </div>
+
+                <!--tab 2-->
+                <div role="tabpanel" class="tab-pane active" id="myEvents">
+                    <div ng-show="!events.length && !pageLoading">
+                        <div class="alert alert-info" role="alert" style="text-align: center">Currently there is no event to show.</div>
+                    </div>
+
+                    <form class="form-inline" ng-submit="searchMyEvent()">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="deviceId" placeholder="Device ID" ng-model="myDeviceId">
+                        </div>
+                        <button type="submit" class="btn btn-default">Search</button>
+                    </form>
+
+                    <div class="event-list-group-wrapper" ng-show="events.length">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item" ng-repeat="event in events">
+                                <h5>Event Type: <span class="label label-default" ng-class="event.event_type">{{event.event_type}}</span></h5>
+                                <p class="list-group-item-text">Longitude: {{event.longitude}}</p>
+                                <p class="list-group-item-text">Latitude: {{event.latitude}}</p>
+                                <p class="list-group-item-text text-muted small">{{event.event_date_time}}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>

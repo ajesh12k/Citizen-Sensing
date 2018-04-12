@@ -1,0 +1,42 @@
+<div class="container">
+    <h2>Devices</h2>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding">
+                <a href="/device/-1" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span>
+                    <span>
+                        Create new Device
+                    </span>
+                </a>
+            </div>
+            <div class="pull-right text-muted"><small>Total Device Count: {{devices.length}}</small></div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-md-3"><span>ID</span></th>
+                    <th class="col-md-5"><span>MAC</span></th>
+                    <th class="col-md-2"><span>Status</span></th>
+                    <th class="col-md-1"></th>
+                    <th class="col-md-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="device in devices">
+                    <td>{{device.deviceId}}</td>
+                    <td>{{device.device_mac}}</td>
+                    <td>{{device.status | title}}</td>
+                    <th><a href="/device-detail/{{device.deviceId}}" title="view"><span class="glyphicon glyphicon-eye-open"></span></a></th>
+                    <td><a href="/device/{{device.deviceId}}" title="edit"><span class="glyphicon glyphicon-edit"></span></a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container-fluid">
+        <div ng-show="pageLoading" class="alert alert-info" role="alert">Loading Devices....</div>
+        <div ng-show="devices.length == 0 && !pageLoading" class="alert alert-info" role="alert">No Result Found.</div>
+    </div>
+</div>

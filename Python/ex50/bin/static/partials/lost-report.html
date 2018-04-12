@@ -1,0 +1,24 @@
+
+<br/>
+<br/>
+<div class="container">
+    <div class="col-md-4 col-md-offset-4">
+        <div ng-show="alerts.length" class="alert alert-info" role="alert" ng-repeat="alert in alerts">{{alert}}</div>
+        <div ng-show="reportSent" class="alert alert-info" role="alert">Report Successfully Sent.</div>
+        <form name="editForm" role="form" ng-submit="report()">
+            <h2>Report Lost Device</h2>
+            <div class="form-group">
+                <label class="control-label" for="field_longitude">Device ID</label>
+                <input type="text" class="form-control" name="longitude" id="field_longitude"
+                       ng-model="deviceId" required/>
+            </div>
+
+            <button type="button" class="btn btn-default" ng-click="back()">
+                Back
+            </button>
+            <button type="submit" ng-disabled="editForm.$invalid" class="btn btn-primary">
+                Report
+            </button>
+        </form>
+    </div>
+</div>

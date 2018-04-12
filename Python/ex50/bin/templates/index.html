@@ -1,0 +1,98 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<base href="/">
+		<title>Citizen Sensing</title>
+		
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8">
+		<!--<title>AngularFlask</title>-->
+
+		<link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="/static/css/app.css">
+		<link rel="stylesheet" href="/static/css/rzslider.css">
+		
+		<link rel="stylesheet" href="/static/lib/fa/fa-brands.min.css">
+		<link rel="stylesheet" href="/static/lib/fa/fa-regular.min.css">
+		<link rel="stylesheet" href="/static/lib/fa/fa-solid.min.css">
+		<link rel="stylesheet" href="/static/lib/fa/fontawesome-all.min.css">
+		<link rel="stylesheet" href="/static/lib/fa/fontawesome.min.css">
+		<link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap-social.css">		
+		
+
+		<script src="/static/lib/angular/angular.js"></script>
+		<script src="/static/lib/angular/angular-resource.js"></script>
+		<script src="/static/lib/angular/angular-route.js"></script>
+		<script src="/static/lib/moment.min.js"></script>
+
+		<script src="/static/js/app.js"></script>
+		<script src="/static/js/controllers.js"></script>
+		<script src="/static/js/services.js"></script>
+		<script src="/static/js/directives.js"></script>
+		<script src="/static/js/filters.js"></script>
+
+		<script src="/static/lib/jquery/jquery-3.3.1.js"></script>
+		<script src="/static/lib/twitter-angular.js"></script>
+		<script src="/static/lib/bootstrap/js/bootstrap.min.js"></script>
+
+		<script src="https://maps.google.com/maps/api/js?key=AIzaSyDvZT9ZLA12N8s8NQ7NueGdXeUC2MgTBXs&libraries=placeses,visualization,drawing,geometry,places"></script>
+
+		<script src="https://rawgit.com/rzajac/angularjs-slider/master/dist/rzslider.js"></script>
+	</head>
+
+	<body ng-app="CsenseFlask" ng-controller="MainController">
+		<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/"><img style="max-width:42px; margin-top: -11px;" src="/static/images/csense_logo.png" ></a>
+      <a class="navbar-brand" href="/">CSensing </a>
+      
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+      		<li class="hidden-lg hidden-md"><a href="/events-mb">Events</a></li>
+			<li><a href="/about">About</a></li>
+			<li><a href="/help">Help</a></li>
+			<li class="dropdown" ng-show="admin.loggedIn == 'true'">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin
+					<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="/devices">Manage Devices</a></li>
+					<li><a href="/manage-events">Manage Events</a></li>
+					<li><a href="/users">Users</a></li>
+				</ul>
+			</li>
+		</ul>
+      	<ul class="nav navbar-nav navbar-right">
+			<li><a href="/lost-report">Lost Report</a></li>
+			<li><a ng-show="admin.loggedIn == 'false'" href="/login">Login</a></li>
+			<li><a ng-show="admin.loggedIn == 'true'" href="#" ng-click="logout()">Logout</a></li>
+		</ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+		<br>
+		<br>
+
+		<div class="col-md-12 col-xs-12 col-sm-12 no-padding">
+			<div ng-view></div>
+		</div>
+
+
+		<!--inject scripts here-->
+		<script src="/static/lib/ng-map.min.js"></script>
+		<!--twitter widget integration-->
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+	</body>
+</html>

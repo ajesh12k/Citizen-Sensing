@@ -1,0 +1,38 @@
+<div>
+    <div class="col-md-3">
+        <div class="cs-overlap-sidemenu-container">
+            <div class="cs-sidemenu-search-container">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 vcenter">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                        </div><!-- /input-group -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-10 col-md-offset-1">
+        <div class="cs-overlap-slider-container">
+            <div class="cs-slider">
+                <rzslider rz-slider-model="priceSlider.value" rz-slider-options="priceSlider.options"></rzslider>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 cs-map-container no-padding">
+        <ng-map id="map" zoom="14" center="[61.058675, 28.099409]" default-style="false">
+            <marker position="[61.062912, 28.085848]" title="hello"></marker>
+            <marker position="[61.054854, 28.082243]" title="marker" animation="Animation.DROP"></marker>
+            <marker position="[40.73, -74.19]" title="drag me" draggable="true"></marker>
+            <marker position="[61.054106, 28.109108]" title="how" animation="Animation.BOUNCE"></marker>
+            <marker position="[61.055934, 28.102413]" title="are"></marker>
+            <marker position="[61.051614, 28.127476]" title="from"></marker>
+        </ng-map>
+    </div>
+</div>

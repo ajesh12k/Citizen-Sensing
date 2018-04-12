@@ -1,0 +1,40 @@
+<div class="container">
+    <h2>Users</h2>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding">
+                <a href="#" class="btn btn-primary" role="button"><span class="glyphicon glyphicon-plus"></span>
+                    <span>
+                        Create new Users
+                    </span>
+                </a>
+            </div>
+            <div class="pull-right text-muted"><small>Total Users Count: {{users.length}}</small></div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="col-md-2"><span>User name</span></th>
+                <th class="col-md-2"><span>Position</span></th>
+                <th class="col-md-1"><span>Status</span></th>
+                <th class="col-md-3"><span>Date Created</span></th>
+                <th class="col-md-1"></th>
+                <th class="col-md-1"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="user in users">
+                <td>{{user.username}}</td>
+                <td>{{user.position}}</td>
+                <td>{{user.status}}</td>
+                <td>{{user.date_created}}</td>
+                <th><a href="#" title="view"><span class="glyphicon glyphicon-user"></span></a></th>
+                <td><a href="#" title="edit"><span class="glyphicon glyphicon-edit"></span></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

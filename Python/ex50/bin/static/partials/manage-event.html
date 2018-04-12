@@ -1,0 +1,44 @@
+<br>
+<br>
+<div class="container-fluid">
+    <div class="col-md-8 col-md-offset-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">{{evenId}}</div>
+            <div class="panel-body">
+                <div class="col-md-7 cs-admin-map-wrapper">
+                    <ng-map id="map" zoom="10" center="{{event.pos}}" zoom-to-include-markers="true" default-style="false">
+                        <marker position="{{event.pos}}"></marker>
+                    </ng-map>
+                </div>
+                <div class="col-md-5">
+                    <table class="table table-bordered table-hover ">
+                        <tbody>
+                        <tr>
+                            <td>Event ID</td>
+                            <td>{{event.event_id}}</td>
+                        </tr>
+                        <tr>
+                            <td>Date Created</td>
+                            <td>{{event.event_date_time}}</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>
+                                <div ng-show="event.event_status == 'new'">Active</div>
+                                <div class="text-capitalize" ng-show="event.event_status != 'new'">{{event.event_status}}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Type</td>
+                            <td>
+                                {{event.event_type}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div ng-hide="event.event_status != 'new'" class="btn btn-primary pull-right" ng-click="resolve()">Resolve</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

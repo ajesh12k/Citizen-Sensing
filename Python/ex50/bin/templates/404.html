@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <head>
+        <meta charset="utf-8">
+        <title>AngularFlask</title>
+
+        <link rel="stylesheet" href="/static/lib/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/css/app.css">
+
+        <script src="/static/lib/jquery/jquery-3.3.1.js"></script>
+        <script src="/static/lib/bootstrap/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container page">
+            <div id="content" class="container main" ng-view>
+                <div>
+                    <h3>404</h3>
+                    <h4>Sorry, but the page you were trying to view does not exist.</h4>
+                </div>
+            </div>
+
+            <hr>
+            <footer id="footer" class="footer">
+                <div class="footer-left">
+                    <a href="/about">About</a> |
+                    <a href="/">Home</a>
+                </div>
+                <div class="footer-right">
+                    <span>&copy; 2013 AngularFlask</span>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
