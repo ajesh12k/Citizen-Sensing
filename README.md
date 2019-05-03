@@ -5,6 +5,6 @@ Team:
 Ajesh Kumar - Project Manager
 Maliha Rahman - Scrum Master
 Anisul Islam - Front end lead
-Feruzjon Muyassarov - Back end Ninja
-Krishna Teja Vaddepalli - Motivator
-Sami
+Feruzjon Muyassarov - Documentation and Front End
+Krishna Teja Vaddepalli - Back end Ninja
+Sami - Documentation and Front End
